@@ -6,7 +6,6 @@ import { Logger } from "../libs/log";
 
 import { IConfig } from "../interfaces/config";
 const config: IConfig = require("../../config/config.json");
-import { ICommit } from "../interfaces/Commit";
 
 import {} from "../mongo";
 
@@ -30,7 +29,7 @@ export class CommitsController {
         headers: { Accept: "application/vnd.github.v3+json" },
       });
       console.log(response.data);
-      const result: ICommit = response.data.map((item: any) => {
+      const result: any = response.data.map((item: any) => {
         const newData: any = {};
 
         newData["sha"] = item["sha"];

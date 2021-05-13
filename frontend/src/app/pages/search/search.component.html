@@ -1,0 +1,84 @@
+<ngx-loading [show]="loading"></ngx-loading>
+
+<div class="container">
+  <div class="row">
+    <div class="col-12 col-sm-12 d-flex flex-row justify-content-center align-items-center extreme">
+
+      <mat-card class="w-75 w-sm-50">
+        <h5 class="mb-3">Enter the username and press the button</h5>
+        <form [formGroup]="form" (submit)="getData()">
+          <mat-form-field appearance="fill" class="d-block">
+            <mat-label class="text-dark font-weight-bold">Username</mat-label>
+            <input matInput formControlName="username" type="text">
+            <mat-error *ngIf="form.get('username').invalid">Enter valid username</mat-error>
+          </mat-form-field>
+
+          <div class="text-center">
+            <button mat-raised-button type="submit" class="btn btn-primary">GET DATA</button>
+          </div>
+        </form>
+      </mat-card>
+    </div>
+  </div>
+</div>
+
+<div [ngClass]="data.length > 0 ? 'container-fluid d-block py-3' : 'd-none'">
+  <div class="row">
+    <div class="col-12 col-sm-12 col-md-3">
+      <mat-card>
+        <img class="img-fluid" [src]="img" alt="git avatar" width="350">
+        <div class="mt-2">
+          <h5>{{name}}</h5>
+          <p>{{company}}</p>
+          <p>{{location}}</p>
+          <p>{{email}}</p>
+          <p>{{blog}}</p>
+          <p>{{bio}}</p>
+          <p>Public Repos: {{publicRepoCount}}</p>
+          <p>Followers: {{followers}}</p>
+          <p>Following: {{following}}</p>
+        </div>
+      </mat-card>
+    </div>
+
+    <div class="col-12 col-sm-12 col-md-9">
+      <mat-form-field>
+        <mat-label>Filter</mat-label>
+        <input matInput (keyup)="applyFilter($event)" placeholder="Repository name" #input>
+      </mat-form-field>
+
+      <div class="mat-elevation-z8">
+        <table mat-table [dataSource]="dataSource" matSort>
+
+          <!-- ID Column -->
+          <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header class="font-weight-bold"> ID </th>
+            <td mat-cell *matCellDef="let row"> {{row.id}} </td>
+          </ng-container>
+
+          <!-- Name Column -->
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header class="font-weight-bold"> Name </th>
+            <td mat-cell *matCellDef="let row" (click)="repoTab(row.repoURL)" role="button"> {{row.name}} </td>
+          </ng-container>
+
+          <!-- Repo ID Column -->
+          <ng-container matColumnDef="repoID">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header class="font-weight-bold"> Repo ID </th>
+            <td mat-cell *matCellDef="let row"> {{row.repoID}} </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+          <!-- Row shown when there is no matching data. -->
+          <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td>
+          </tr>
+        </table>
+
+        <mat-paginator [pageSizeOptions]="[20, 50, 100]"></mat-paginator>
+      </div>
+    </div>
+  </div>
+</div>

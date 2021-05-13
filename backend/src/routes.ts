@@ -1,7 +1,7 @@
 import { Router } from "express";
 
-import { ProfileController } from "./controllers/ProfileController";
+import { GitDataController } from "./controllers/GitDataController";
 
 export const routes = Router();
 
-routes.get("/:username", ProfileController.getnSaveProfile);
+routes.get("/:username", GitDataController.getData);

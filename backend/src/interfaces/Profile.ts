@@ -8,6 +8,7 @@ export interface IProfile {
   email: string;
   bio: string;
   publicRepoCount: string;
+  repo_link: string;
   avatar: string;
   profileURL: string;
   followers: number;

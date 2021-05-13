@@ -5,6 +5,8 @@ import { Logger } from "./libs/log";
 const config: IConfig = require("../config/config.json");
 import { IConfig } from "./interfaces/config";
 import { IProfile } from "./interfaces/Profile";
+import { IRepo } from "./interfaces/Repo";
+import { ICommit } from "./interfaces/Commit";
 
 // export const getNewId = () => new mongo.ObjectId().toHexString();
 var ObjectId = require("mongodb").ObjectId;
@@ -13,6 +15,8 @@ let client: mongo.MongoClient;
 let db: mongo.Db;
 
 let profileCollection: mongo.Collection<IProfile>;
+let repoCollection: mongo.Collection<IRepo>;
+let commitCollection: mongo.Collection<ICommit>;
 
 try {
   (async () => {
@@ -29,6 +33,9 @@ try {
 
     profileCollection = db.collection("profile");
     profileCollection.createIndex({ userID: 1 }, { unique: true });
+
+    repoCollection = db.collection("repo");
+    commitCollection = db.collection("commit");
   })();
 } catch (error) {
   Logger.log(`Mongo connection error:\n${error}`, "error");
@@ -36,7 +43,19 @@ try {
 
 export const getProfileByName = async (username: string) => {
   try {
-    let result = await profileCollection.find({ username: username }).toArray();
+    let result = await profileCollection
+      .aggregate([
+        {
+          $lookup: {
+            from: "repo",
+            localField: "username",
+            foreignField: "username",
+            as: "repoData",
+          },
+        },
+        { $match: { username: username } },
+      ])
+      .toArray();
     return result;
   } catch (error) {
     Logger.log(`mongo:getProfileByName -> ${error}`, "error");
@@ -56,6 +75,7 @@ export const insertProfile = async (profileData: IProfile) => {
       email: profileData.email,
       bio: profileData.bio,
       publicRepoCount: profileData.publicRepoCount,
+      repo_link: profileData.repo_link,
       avatar: profileData.avatar,
       profileURL: profileData.profileURL,
       followers: profileData.followers,
@@ -65,6 +85,26 @@ export const insertProfile = async (profileData: IProfile) => {
     return result.ops;
   } catch (error) {
     Logger.log(`mongo:insertProfile -> ${error}`, "error");
+    return Promise.reject(error.errmsg);
+  }
+};
+
+export const insertRepos = async (reposData: any) => {
+  try {
+    let result = await repoCollection.insertMany(reposData);
+    return result.ops;
+  } catch (error) {
+    Logger.log(`mongo:insertRepos -> ${error}`, "error");
+    return Promise.reject(error.errmsg);
+  }
+};
+
+export const insertCommits = async (commitsData: any) => {
+  try {
+    let result = await commitCollection.insertMany(commitsData);
+    return result.ops;
+  } catch (error) {
+    Logger.log(`mongo:insertCommits -> ${error}`, "error");
     return Promise.reject(error.errmsg);
   }
 };

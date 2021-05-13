@@ -1,7 +1,9 @@
 import { Router } from "express";
 
-import { GitController } from "./controllers/GitController";
+import { ReposController } from "./controllers/ReposController";
+import { CommitsController } from "./controllers/CommitsController";
 
 export const routes = Router();
 
-routes.get("/:username", GitController.getGitData);
+routes.get("/:username", ReposController.getRepos);
+routes.get("/:username/:repoName", CommitsController.getCommits);

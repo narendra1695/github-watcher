@@ -5,7 +5,8 @@ import { Logger } from "./libs/log";
 const config: IConfig = require("../config/config.json");
 import { IConfig } from "./interfaces/config";
 
-// import { ICustomer } from "./interfaces/Customer";
+import { IRepo } from "./interfaces/Repo";
+import { ICommit } from "./interfaces/Commit";
 
 // export const getNewId = () => new mongo.ObjectId().toHexString();
 var ObjectId = require("mongodb").ObjectId;
@@ -13,7 +14,8 @@ var ObjectId = require("mongodb").ObjectId;
 let client: mongo.MongoClient;
 let db: mongo.Db;
 
-// let customerCollection: mongo.Collection<ICustomer>;
+let repositoryCollection: mongo.Collection<IRepo>;
+let commitCollection: mongo.Collection<ICommit>;
 
 try {
   (async () => {
@@ -28,7 +30,8 @@ try {
     client = inst;
     db = client.db("medumart");
 
-    // customerCollection = db.collection("customers");
+    repositoryCollection = db.collection("repos");
+    commitCollection = db.collection("commits");
   })();
 } catch (error) {
   Logger.log(`Mongo connection error:\n${error}`, "error");

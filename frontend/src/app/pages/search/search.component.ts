@@ -99,7 +99,7 @@ export class SearchComponent implements OnInit {
         (error: any) => {
           this.loading = false;
           console.log(error);
-          this.toastr.error('', 'Failed', {
+          this.toastr.error('Something went wrong!', 'Failed', {
             timeOut: 3000,
             easing: 'ease-in',
             easeTime: 300,

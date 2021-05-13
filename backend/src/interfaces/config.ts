@@ -8,4 +8,5 @@ export interface IConfig {
     Frontend: string;
     Backend: string;
   };
+  baseURL: string;
 }
